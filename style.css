@@ -1,0 +1,179 @@
+@font-face{
+    font-family: "ArchivoBlack-Regular";
+    src: url(Fonts/ArchivoBlack-Regular.ttf);
+    font-weight: bold;
+    font-style: normal;
+}
+
+:root{
+    --primary: white;
+    --secondary: #004461;
+    --third: #2f3543;
+    --buttons: #2c5b72;
+}
+body{
+    margin: 0;
+}
+a{
+    text-decoration: none;
+}
+#banner{
+    font-size: 50px;
+    max-width: fit-content;
+    font-family: ArchivoBlack-Regular;
+    color: var(--secondary);
+    margin: .2em;
+    margin-top: 0;
+    height: 2em;
+}
+
+header{
+    padding: 10px;
+    background-color: var(--primary);
+    position: sticky;
+    top: 0;
+    display: block;
+    z-index: 3;
+    box-shadow: 0 1px 15px;
+}
+#ulist{
+    margin-bottom: .5em;
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+}
+.headerlist{
+    position: relative;
+    display: inline-block;
+    height: 30px;
+    text-align: center;
+    align-content: center;
+    margin: 5px;
+    padding: 5px;
+    font-size: 30px;
+    color: var(--secondary);
+    text-decoration: none;
+    border: 3px solid transparent;
+    font-family: SourceCodePro;
+    font-weight: 10;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.headerlist::before{
+    content: "";
+    background-color: var(--secondary);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: .1em;
+    margin-bottom: -.1em;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .4s ease-in-out;
+}
+.headerlist:hover::before{
+    transform: scaleX(1);
+}
+.selected::after{
+    content: "";
+    background-color: var(--secondary);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: .1em;
+    margin-bottom: -.1em;
+}
+#bokadetider{
+    padding: .5em;
+}
+table, tr, td{
+    padding: 5px;
+    border: 2px solid black;
+}
+th{
+    padding: 5px;
+}
+.bokningstider{
+    width: 75%;
+    display: grid;
+    margin: auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    justify-items: center;
+}
+.tidsruta{
+    height: 8em;
+    width: 80%;
+    padding: .5em;
+    margin: .5em;
+    background-color: rgb(206, 206, 206);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgb(167, 167, 167);
+    box-shadow: 2px 2px 10px;
+    cursor: pointer;
+}
+.selectedTid{
+    border: 2px solid var(--secondary);
+}
+.tidsruta:hover{
+    border: 2px solid var(--secondary);
+}
+#skickabutton{
+    display: grid;
+    width: 5em;
+    height: 3em;
+    color: white;
+    border: 2px solid black;
+    background-color: var(--secondary);
+    border-radius: 8px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    margin-top: 2em;
+}
+.bokad{
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+h1, h2, h3{
+    text-align: center;
+}
+#verifieringsdiv{
+  display: block;
+  margin: auto;
+  width: 30em;
+  height: 50%;
+  padding: 2em;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+}
+
+
+/*https://cssloaders.github.io/*/
+.loader {
+  position: relative;
+  margin: auto;
+  display: block;
+  width: 100px;
+  height: 100px;
+}
+.loader:before , .loader:after{
+  content: '';
+  border-radius: 50%;
+  position: absolute;
+  inset: 0;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3) inset;
+}
+.loader:after {
+  box-shadow: 0 2px 0 #FF3D00 inset;
+  animation: rotate 2s linear infinite;
+}
+@keyframes rotate {
+  0% {  transform: rotate(0)}
+  100% { transform: rotate(360deg)}
+}
+/*-----------------------------*/

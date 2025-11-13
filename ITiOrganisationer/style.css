@@ -1,0 +1,157 @@
+@font-face{
+    font-family: "ArchivoBlack-Regular";
+    src: url(Fonts/ArchivoBlack-Regular.ttf);
+    font-weight: bold;
+    font-style: normal;
+}
+
+:root{
+    --primary: #009adb;
+    --secondary: #ccf0ff;
+    --third: #2f3543;
+    --buttons: #2c5b72;
+}
+
+body{
+    margin: 0;
+}
+header{
+    background-color: var(--primary);
+}
+#banner{
+    font-size: 50px;
+    max-width: fit-content;
+    font-family: ArchivoBlack-Regular;
+    color: var(--secondary);
+    margin: .2em;
+    margin-top: 0;
+}
+.ulist{
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+}
+.headerlist{
+    position: relative;
+    display: inline-block;
+    font-family: ArchivoBlack-Regular;
+    color: white;
+    height: 30px;
+    text-align: center;
+    align-content: center;
+    margin: 5px;
+    padding: 2px;
+}
+.headerlist::before{
+    content: "";
+    background-color: white;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: .1em;
+    margin-bottom: -.1em;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .4s ease-in-out;
+}
+.headerlist:hover::before{
+    transform: scaleX(1);
+}
+.ulist * a{
+    text-decoration: none;
+}
+.ulist * a:hover{
+    color: rgb(216, 216, 216);
+}
+
+table, tr, td{
+    padding: 5px;
+    border: 2px solid black;
+}
+th{
+    padding: 5px;
+}
+
+/*https://cssloaders.github.io/*/
+.loader {
+  position: relative;
+  margin: auto;
+  display: block;
+  width: 100px;
+  height: 100px;
+}
+.loader:before , .loader:after{
+  content: '';
+  border-radius: 50%;
+  position: absolute;
+  inset: 0;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3) inset;
+}
+.loader:after {
+  box-shadow: 0 2px 0 #FF3D00 inset;
+  animation: rotate 2s linear infinite;
+}
+@keyframes rotate {
+  0% {  transform: rotate(0)}
+  100% { transform: rotate(360deg)}
+}
+/*-----------------------------*/
+h1, h3{
+    text-align: center;
+}
+#verifieringsdiv{
+  display: block;
+  margin: auto;
+  width: 30em;
+  height: 50%;
+  padding: 2em;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+}
+
+/* https://www.w3schools.com/howto/howto_js_dropdown.asp */
+.dropbtn {
+    background-color: var(--primary);
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: right;
+    background-image: url("Icons/dropdownMeny.png") no-repeat;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #2980B9;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--primary);
+    width: 100%;
+    overflow: auto;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    font-family: ArchivoBlack-Regular;
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    background-color: #2980B9;
+}
+
+.dropdown a:hover {background-color: #206c9e;}
+
+.show {display: block;}
+/* --------------------------*/
