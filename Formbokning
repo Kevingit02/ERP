@@ -1,0 +1,112 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+  $cookiepath = "/tmp/cookies.txt";
+  $timeout=3600; 
+
+  $baseurl= 'https://193.93.250.83:8080/';
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Accept: application/json'));
+    curl_setopt($ch, CURLOPT_IPRESOLVE_V4);
+    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiepath);
+    curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiepath);
+    curl_setopt($ch,CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
+    
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    echo "<h2>Tack för din bokning!</h2>";
+    echo "<p>Följande uppgifter har skickats in:</p><ul>";
+
+    foreach ($_POST as $key => $value) {
+        if ($key != "submit") {
+            echo "<li><strong>" . htmlspecialchars($key) . ":</strong> " . htmlspecialchars($value) . "</li>";
+        }
+    }
+
+    echo "</ul><a href='formbokning.php'>Tillbaka till formuläret</a>";
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<title>Bokning av tid</title>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px; }
+form { background: white; padding: 20px; border-radius: 8px; max-width: 700px; margin: auto; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+h2 { color: #2b6cb0; }
+fieldset { margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; }
+legend { font-weight: bold; }
+label { display: block; margin-top: 10px; }
+textarea { width: 100%; height: 80px; }
+input[type="submit"] { background-color: #2b6cb0; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+input[type="submit"]:hover { background-color: #1a4f8b; }
+</style>
+</head>
+<body>
+
+<h2>Bokning av tid</h2>
+<p>Fyll i formuläret nedan. En sjuksköterska kommer att bedöma dina svar och avgöra om du behöver kontakt med läkare sjuksköterska eller kurator.</p>
+
+<form method="POST" action="">
+    <fieldset>
+        <legend>Övergripande symptom för kontakt</legend>
+
+        <label>Har du haft feber i över sju dygn?</label>
+        <input type="radio" name="Feber över 7 dygn" value="Ja"> Ja
+        <input type="radio" name="Feber över 7 dygn" value="Nej"> Nej
+
+        <label>Har du hosta?</label>
+        <input type="radio" name="Hosta" value="Ja"> Ja
+        <input type="radio" name="Hosta" value="Nej"> Nej
+
+        <label>Kommer det blod när du hostar?</label>
+        <input type="radio" name="Blod vid hosta" value="Ja"> Ja
+        <input type="radio" name="Blod vid hosta" value="Nej"> Nej
+
+        <label>Känns det tungt när du andas?</label>
+        <input type="radio" name="Tung andning" value="Ja"> Ja
+        <input type="radio" name="Tung andning" value="Nej"> Nej
+
+        <label>Har du muskelvärk och/eller huvudvärk?</label>
+        <input type="radio" name="Muskelvärk eller huvudvärk" value="Ja"> Ja
+        <input type="radio" name="Muskelvärk eller huvudvärk" value="Nej"> Nej
+
+        <label>Har du varit sjuk i mer än 7 dagar?</label>
+        <input type="radio" name="Sjuk mer än 7 dagar" value="Ja"> Ja
+        <input type="radio" name="Sjuk mer än 7 dagar" value="Nej"> Nej
+
+        <label>Tar du några mediciner, om ja ange vilka:</label>
+        <input type="text" name="Mediciner - Fysisk hälsa">
+
+        <label>Beskriv dina besvär (max 150 ord):</label>
+        <textarea name="Beskrivning - Fysisk hälsa" maxlength="1000"></textarea>
+    </fieldset>
+
+    <fieldset>
+        <legend>Övergripande symptom för kontakt med kurator</legend>
+
+        <label>Känner du dig nedstämd?</label>
+        <input type="radio" name="Nedstämd" value="Ja"> Ja
+        <input type="radio" name="Nedstämd" value="Nej"> Nej
+
+        <label>Känner du av ångest och oro?</label>
+        <input type="radio" name="Ångest och oro" value="Ja"> Ja
+        <input type="radio" name="Ångest och oro" value="Nej"> Nej
+
+        <label>Tar du några mediciner, om ja ange vilka:</label>
+        <input type="text" name="Mediciner - Psykisk hälsa">
+
+        <label>Beskriv dina besvär (max 150 ord):</label>
+        <textarea name="Beskrivning - Psykisk hälsa" maxlength="1000"></textarea>
+    </fieldset>
+
+    <input type="submit" name="submit" value="Skicka in">
+</form>
+
+</body>
+</html>
