@@ -22,6 +22,7 @@
           <ul id="ulist">
               <li><a class="headerlist selected">Framsidan</a></li>
               <li><a href="bokningar.php" class="headerlist">Bokade tider</a></li>
+              <li><a href="journal.php" class="headerlist">Journal</a></li>
               <li><a href="om.html" class="headerlist">Om oss</a></li>
           </ul>
       </nav>
