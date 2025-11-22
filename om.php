@@ -9,6 +9,7 @@
     if (!empty($uid)){
 ?>
 <!DOCTYPE html>
+
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
@@ -27,6 +28,7 @@
         </div>
       </div>
       <nav>
+          
         <ul id="ulist">
           <li><a href="exempelfil_erp.php" class="headerlist">Framsidan</a></li>
           <li><a href="bokningar.php" class="headerlist">Bokade tider</a></li>
