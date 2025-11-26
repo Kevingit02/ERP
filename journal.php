@@ -124,7 +124,7 @@ if (isset($_POST['renew_med'])) {
     $medName = $_POST['renew_med'];
 
     $sendData = [
-        "patient" => $p["name"],
+        "patient" => $p["patient_name"],
         "patient_uid" => $p["uid"],
         "medication_name" => $medName
     ];
@@ -202,6 +202,59 @@ foreach ($visa as $field => $label) {
 
 echo "</table>";
 echo "</div>";
+
+$apiUrlRenewAll = $baseurl .
+    'api/resource/G5Renewprescription?filters=' .
+    urlencode('[["patient_uid","=","'.$personnummer.'"]]') .
+    '&fields=["patient","patient_uid","medication_name","status","creation"]';
+
+$ch = curl_init($apiUrlRenewAll);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiepath);
+curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiepath);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$responseRenewAll = curl_exec($ch);
+curl_close($ch);
+
+$dataRenewAll = json_decode($responseRenewAll, true);
+
+echo "<div class='journal-container' style='margin-top:30px'>";
+echo "<div class='journal-header'>Dina receptförnyelser:</div>";
+
+if (empty($dataRenewAll['data'])) {
+    echo "<p>Du har inga registrerade receptförnyelser.</p>";
+} else {
+    echo "<table class='journal-table'>";
+    echo "<tr>
+            <td><strong>Medicin</strong></td>
+            <td><strong>Status</strong></td>
+            <td><strong>Datum</strong></td>
+          </tr>";
+
+    foreach ($dataRenewAll['data'] as $renew) {
+
+        $status = $renew["status"] ?? "Unknown";
+        $color = ($status == "Approved") ? "green" :
+                 (($status == "Pending") ? "orange" :
+                 (($status == "Rejected") ? "red" : "black"));
+
+        $med   = $renew["medication_name"] ?? "";
+        $datum = substr($renew["creation"], 0, 10);
+
+        echo "<tr>";
+        echo "<td>$med</td>";
+        echo "<td style='color:$color; font-weight:bold;'>$status</td>";
+        echo "<td>$datum</td>";
+        echo "</tr>";
+    }
+
+    echo "</table>";
+}
+
+echo "</div>";
+
 ?>
 
 </body>
