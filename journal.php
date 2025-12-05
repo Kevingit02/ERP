@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Om ej inloggad=stoppar
 if (empty($_SESSION['uid'])) {
     echo "Inte inloggad än, gå tillbaka till <a href='login.php'>inloggningssidan</a>";
     exit;
@@ -59,6 +58,12 @@ $patientName = $_SESSION['name'];
     .renew-btn:hover {
         background-color: #163645;
     }
+
+    .reminder-box {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+    }
 </style>
 </head>
 
@@ -71,7 +76,7 @@ $patientName = $_SESSION['name'];
             <li><a href="exempelfil_erp.php" class="headerlist">Framsidan</a></li>
             <li><a href="bokningar.php" class="headerlist">Bokade tider</a></li>
             <li><a class="headerlist selected">Journal</a></li>
-            <li><a href="om.html" class="headerlist">Om oss</a></li>
+            <li><a href="OmOss.php" class="headerlist">Om oss</a></li>
         </ul>
     </nav>
 </header>
@@ -97,7 +102,7 @@ curl_exec($ch);
 curl_close($ch);
 
 $url = $baseurl .
-    'api/resource/Patient?filters=[["uid","=","'.$personnummer.'"]]'.
+    'api/resource/Patient?filters=[["uid","=","'.$personnummer.'"]]' .
     '&fields=["*"]';
 
 $ch = curl_init($url);
@@ -126,7 +131,8 @@ if (isset($_POST['renew_med'])) {
     $sendData = [
         "patient" => $p["patient_name"],
         "patient_uid" => $p["uid"],
-        "medication_name" => $medName
+        "medication_name" => $medName,
+        "recept_slut" => date("Y-m-d", strtotime("+50 days"))
     ];
 
     $ch = curl_init($baseurl . "api/resource/G5Renewprescription");
@@ -152,7 +158,7 @@ $visa = [
     "dob" => "Födelsedatum",
     "uid" => "Personnummer",
     "allergies" => "Allergier",
-    "medication" => "Mediciner",
+    "medication" => "Receptbelagt",
     "medical_history" => "Medicinsk historik",
     "surgical_history" => "Kirurgisk historik",
     "tobacco_past_use" => "Tobak (tidigare)",
@@ -186,7 +192,7 @@ foreach ($visa as $field => $label) {
                 echo "$med";
 
                 echo "
-                <form method='POST' style='display:inline'>
+                <form method='POST' style='display:inline;margin-left:10px;'>
                     <input type='hidden' name='renew_med' value='$med'>
                     <button class='renew-btn'>Förnya</button>
                 </form><br>";
@@ -206,7 +212,7 @@ echo "</div>";
 $apiUrlRenewAll = $baseurl .
     'api/resource/G5Renewprescription?filters=' .
     urlencode('[["patient_uid","=","'.$personnummer.'"]]') .
-    '&fields=["patient","patient_uid","medication_name","status","creation"]';
+    '&fields=["patient","patient_uid","medication_name","status","creation","recept_slut"]';
 
 $ch = curl_init($apiUrlRenewAll);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -220,18 +226,21 @@ curl_close($ch);
 
 $dataRenewAll = json_decode($responseRenewAll, true);
 
+$today = new DateTime();
+
 echo "<div class='journal-container' style='margin-top:30px'>";
 echo "<div class='journal-header'>Dina receptförnyelser:</div>";
 
 if (empty($dataRenewAll['data'])) {
     echo "<p>Du har inga registrerade receptförnyelser.</p>";
 } else {
-    echo "<table class='journal-table'>";
-    echo "<tr>
-            <td><strong>Medicin</strong></td>
-            <td><strong>Status</strong></td>
-            <td><strong>Datum</strong></td>
-          </tr>";
+echo "<table class='journal-table'>";
+echo "<tr>
+        <td><strong>Medicin</strong></td>
+        <td><strong>Status</strong></td>
+        <td><strong>Datum</strong></td>
+        <td><strong>Dagar kvar</strong></td>
+      </tr>";
 
     foreach ($dataRenewAll['data'] as $renew) {
 
@@ -243,10 +252,98 @@ if (empty($dataRenewAll['data'])) {
         $med   = $renew["medication_name"] ?? "";
         $datum = substr($renew["creation"], 0, 10);
 
+$daysLeft = "-";
+if (!empty($renew["recept_slut"])) {
+    $endDate = new DateTime($renew["recept_slut"]);
+    $daysLeft = (int)$today->diff($endDate)->format("%r%a") . " dagar";
+}
+
+echo "<tr>";
+echo "<td>$med</td>";
+echo "<td style='color:$color; font-weight:bold;'>$status</td>";
+echo "<td>$datum</td>";
+echo "<td>$daysLeft</td>";
+echo "</tr>";
+    }
+
+    echo "</table>";
+}
+
+echo "</div>";
+
+$today = new DateTime();
+
+if (!empty($dataRenewAll['data'])) {
+
+    echo "<div class='journal-container' style='margin-top:20px'>";
+    echo "<div class='journal-header'>Receptpåminnelser:</div>";
+
+    foreach ($dataRenewAll['data'] as $renew) {
+
+        if (empty($renew["recept_slut"])) continue;
+
+        $endDate = new DateTime($renew["recept_slut"]);
+        $diff = (int)$today->diff($endDate)->format("%r%a");
+
+        $medName = $renew["medication_name"];
+
+        if ($diff < 5) {
+            echo "<div style='background:#fff3cd;padding:10px;border-left:5px solid #ffca2c;margin-bottom:10px'>
+                    <b>$medName:</b> Recept går ut om $diff dagar.
+                  </div>";
+        }
+    }
+
+    echo "</div>";
+}
+
+echo "<div class='journal-container' style='margin-top:30px'>";
+echo "<div class='journal-header'>Tidigare patientmöten:</div>";
+
+$encounterUrl = $baseurl . 'api/resource/Patient%20Encounter?filters=[["patient","=","'.rawurlencode($_SESSION["name"]).'"]]' . '&fields=["*"]';
+
+$ch = curl_init($encounterUrl);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiepath);
+curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiepath);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$encounterResponse = curl_exec($ch);
+
+curl_close($ch);
+
+$encounters = json_decode($encounterResponse, true);
+
+if (empty($encounters['data'])) {
+    echo "<p>Inga patientmöten hittades.</p>";
+} else {
+    echo "<table class='journal-table'>";
+    echo "<tr>
+            <td><strong>Datum</strong></td>
+            <td><strong>Tid</strong></td>
+            <td><strong>Läkare eller Sjuksköterska</strong></td>
+            <td><strong>Avdelning</strong></td>
+            <td><strong>Besvär</strong></td>
+            <td><strong>Diagnos</strong></td>
+          </tr>";
+
+    foreach ($encounters['data'] as $enc) {
+
+        $datum = $enc["encounter_date"] ?? "-";
+        $tid   = $enc["encounter_time"] ?? "-";
+        $dok   = $enc["practitioner_name"] ?? "-";
+        $dep   = $enc["medical_department"] ?? "-";
+        $symptom = $enc["custom_symtom"] ?? "-";
+        $diag    = $enc["custom_diagnos"] ?? "-";
+
         echo "<tr>";
-        echo "<td>$med</td>";
-        echo "<td style='color:$color; font-weight:bold;'>$status</td>";
         echo "<td>$datum</td>";
+        echo "<td>$tid</td>";
+        echo "<td>$dok</td>";
+        echo "<td>$dep</td>";
+        echo "<td>$symptom</td>";
+        echo "<td>$diag</td>";
         echo "</tr>";
     }
 
