@@ -46,13 +46,15 @@ $patientName = $_SESSION['name'];
     }
 
     .renew-btn {
-        padding: 6px 12px;
+        padding: 10px 20px;
         background-color: #2c5b72;
         border-radius: 5px;
         color: white;
         cursor: pointer;
         display: inline-block;
         margin-top: 8px;
+        width: 120px;
+        text align: center;
     }
 
     .renew-btn:hover {
@@ -132,7 +134,6 @@ if (isset($_POST['renew_med'])) {
         "patient" => $p["patient_name"],
         "patient_uid" => $p["uid"],
         "medication_name" => $medName,
-        "recept_slut" => date("Y-m-d", strtotime("+50 days"))
     ];
 
     $ch = curl_init($baseurl . "api/resource/G5Renewprescription");
@@ -252,10 +253,18 @@ echo "<tr>
         $med   = $renew["medication_name"] ?? "";
         $datum = substr($renew["creation"], 0, 10);
 
-$daysLeft = "-";
-if (!empty($renew["recept_slut"])) {
+$daysLeftText = "-";
+$daysLeft = "Recept ej godkänt";
+
+if (!empty($renew["recept_slut"]) && $status == "Approved") {
     $endDate = new DateTime($renew["recept_slut"]);
-    $daysLeft = (int)$today->diff($endDate)->format("%r%a") . " dagar";
+    $daysLeft = (int)$today->diff($endDate)->format("%r%a");
+
+    if ($daysLeft < 0) {
+        $daysLeftText = "Recept har gått ut";
+    } else {
+        $daysLeftText = $daysLeft . " dagar";
+    }
 }
 
 echo "<tr>";
