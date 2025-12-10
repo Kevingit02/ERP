@@ -16,6 +16,7 @@ $patientName = $_SESSION['name'];
     <title>Journal</title>
     <link href="style.css" rel="stylesheet">
     <script src="javaScript.js"></script>
+    
 
 <style>
     .journal-container {
@@ -71,17 +72,21 @@ $patientName = $_SESSION['name'];
 
 <body>
 
-<header>
-    <a href="index.html"><div id="banner">Mölndals vårdcentral</div></a>
-    <nav>
-        <ul id="ulist">
-            <li><a href="exempelfil_erp.php" class="headerlist">Framsidan</a></li>
-            <li><a href="bokningar.php" class="headerlist">Bokade tider</a></li>
-            <li><a class="headerlist selected">Journal</a></li>
-            <li><a href="OmOss.php" class="headerlist">Om oss</a></li>
-        </ul>
-    </nav>
-</header>
+    <header>
+      <div id="bannerContainer">
+        <div id="banner"><a href="exempelfil_erp">Mölndals vårdcentral</a></div>
+      </div>
+      <nav>
+          <ul id="ulist">
+              <li><a href="nyheter.php" class="headerlist">Framsidan</a></li>
+              <li><a class="headerlist selected">Bokade tider</a></li>
+              <li><a href='journal.php' class="headerlist">Journal</a></li>
+              <li><a href='provsvar.php' class="headerlist">Provsvar</a></li>
+              <li><a href="OmOss.php" class="headerlist">Om oss</a></li>
+              <li><a href="loggaut.php" class="headerlist">Logga ut</a></li>
+          </ul>
+      </nav>
+    </header>
 
 <?php
 
