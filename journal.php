@@ -276,7 +276,7 @@ echo "<tr>";
 echo "<td>$med</td>";
 echo "<td style='color:$color; font-weight:bold;'>$status</td>";
 echo "<td>$datum</td>";
-echo "<td>$daysLeft</td>";
+echo "<td>$daysLeftText</td>";
 echo "</tr>";
     }
 
